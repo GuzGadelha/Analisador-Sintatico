@@ -1,0 +1,11 @@
+build/
+build_release/
+bin/
+*.o
+*.tab.cpp
+*.tab.hpp
+lex.yy.cpp
+tontoParser
+tontoParser.exe
+saida.txt
+.vscode/.browse.VC.db*

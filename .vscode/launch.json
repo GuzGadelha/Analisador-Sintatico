@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Executar/Depurar Tonto Parser",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/tontoParser",
+            "args": ["${workspaceFolder}/testes/01_modelo_completo_anexo.tonto"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "Build Debug"
+        }
+    ]
+}
