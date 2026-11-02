@@ -1,0 +1,86 @@
+package UniversidadeOntologiaModel {
+
+    // Tipos de dados estruturados
+    datatype Address {
+        street: string
+        number: int
+        city: string
+    }
+
+    datatype PhoneNumber {
+        ddd: int
+        number: int
+    }
+
+    // Classes enumeradas
+    enum EyeColor { Blue, Green, Brown, Black }
+
+    // Classe raiz Person e atributos
+    kind Person {
+        age: int
+        eyeColor: EyeColor
+        phone: PhoneNumber
+        birthDate: date {const}
+        preferredNames: string
+    }
+
+    // Fases da vida de uma pessoa
+    phase Child specializes Person
+    phase Teenager specializes Person
+    phase YoungAdult specializes Person
+
+    // Generalização (Genset) de fases
+    disjoint complete genset PersonAgeGroup {
+        general Person
+        specifics Child, Teenager, YoungAdult
+    }
+
+    // Papéis de Estudante
+    role Student specializes Person
+    role FormerStudent specializes Student
+    role ActiveStudent specializes Student
+
+    disjoint complete genset StudentStatus where FormerStudent, ActiveStudent specializes Student
+
+    // Papéis de Funcionário e Professor
+    role Employee specializes Person
+    role UniversityProfessor specializes Employee
+
+    // Organização e Empregador
+    category Organization
+    roleMixin Employer
+
+    collective Staff
+    subkind JuniorStaff specializes Staff
+    subkind SeniorStaff specializes Staff
+
+    kind Room
+    subkind Classroom specializes Room
+
+    kind Department {
+        name: string
+    }
+
+    // Universidade com relações internas de composição/agregação
+    kind University specializes Organization {
+        address: Address
+        @componentOf [1] <>-- [1..*] Department
+        @componentOf [1] <>-- [1] Staff
+        @componentOf [1] <>-- [1..*] Room
+    }
+
+    // Relatores
+    relator EmploymentContract
+    relator Enrollment
+
+    // Relações externas com mediação e cardinalidades
+    @mediation relation EmploymentContract [1..*] -- [1] Employee
+    @mediation relation EmploymentContract [1..*] -- [1] Employer
+    @mediation relation Enrollment [1..*] -- [1] ActiveStudent
+    @mediation relation Enrollment [1..*] -- [1] Department
+
+    // Instâncias de teste
+    Pessoa01
+    Docente01
+    Aluno01
+}

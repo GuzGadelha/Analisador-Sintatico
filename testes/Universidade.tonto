@@ -1,0 +1,52 @@
+package UniversidadeModel {
+
+    // Novos tipos de dados personalizados
+    CPFDataType
+    MatriculaDataType
+
+    // Estereótipos de Classe
+    kind Person {
+        cpf: CPFDataType
+        birthDate: date
+        name: string
+    }
+
+    subkind Student
+    subkind Professor
+    subkind Employee
+
+    phase UndergraduateStudent
+    phase GraduateStudent
+
+    collective ResearchGroup
+    quantity Budget
+
+    // Generalização e Conjuntos de Generalização
+    genset StudentPhases {
+        general Student
+        specifics UndergraduateStudent, GraduateStudent
+        disjoint
+        complete
+    }
+
+    genset PersonRoles {
+        general Person
+        specifics Student, Professor, Employee
+    }
+
+    // Estereótipos de Relação e Meta-atributos
+    material enrolledIn [1..*] (Student) <>-- (UndergraduateStudent) {
+        ordered
+        derived
+    }
+
+    mediation teaches [1..*] (Professor) --<> (Student)
+
+    characterization evaluates (Professor) .. (Student)
+
+    // Instâncias (identificadores com sufixo numérico)
+    Aluno01
+    Aluno02
+    Docente10
+    Campus2026
+}

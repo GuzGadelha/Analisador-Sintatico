@@ -1,0 +1,25 @@
+package ModeloTaxonomico {
+
+    kind Veiculo {
+        placa: string
+        anoFabricacao: int
+    }
+
+    subkind Carro specializes Veiculo
+    subkind Caminhao specializes Veiculo
+    subkind Motocicleta specializes Veiculo
+
+    // Generalização em bloco com restrições disjunta e completa
+    disjoint complete genset TiposDeVeiculo {
+        general Veiculo
+        specifics Carro, Caminhao, Motocicleta
+    }
+
+    kind ContaBancaria
+    phase ContaAtiva specializes ContaBancaria
+    phase ContaBloqueada specializes ContaBancaria
+    phase ContaEncerrada specializes ContaBancaria
+
+    // Generalização inline com where e restrições
+    disjoint complete genset StatusConta where ContaAtiva, ContaBloqueada, ContaEncerrada specializes ContaBancaria
+}

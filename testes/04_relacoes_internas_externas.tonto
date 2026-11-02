@@ -1,0 +1,26 @@
+package ModeloRelacional {
+
+    kind Empresa {
+        razaoSocial: string
+        @componentOf [1] <>-- [1..*] Filial
+    }
+
+    kind Filial {
+        cidade: string
+    }
+
+    kind Empregado {
+        nome: string
+    }
+
+    // Relações externas com operadores relacionais e cardinalidades
+    @mediation relation ContratoDeTrabalho [1..*] -- [1] Empregado
+    @mediation relation ContratoDeTrabalho [1..*] -- [1] Empresa
+
+    material alocadoEm [1..*] (Empregado) <>-- (Filial) {
+        ordered
+        derived
+    }
+
+    characterization supervisiona (Empregado) .. (Empregado)
+}

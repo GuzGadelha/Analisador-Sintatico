@@ -1,0 +1,25 @@
+package ModeloComErros {
+
+    // 1. Erro Sintatico: Falta tipo no atributo
+    kind Pessoa {
+        nome: 
+        idade: int
+    }
+
+    // 2. Erro Sintatico: Identificador de classe invalido iniciado por digitos
+    kind 123CarroInvalido {
+        ano: int
+    }
+
+    // 3. Erro Sintatico: Genset malformado sem fechar chaves
+    genset FaixaEtariaIncompleto {
+        general Pessoa
+        specifics Bebe, Crianca
+    // Faltou o '}' aqui
+
+    // 4. Erro Sintatico: Relacao externa com erro de sintaxe
+    @mediation relation Contrato [1..*] -- 
+
+    // 5. Erro Sintatico: Caractere inesperado
+    $
+}

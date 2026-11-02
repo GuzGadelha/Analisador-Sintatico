@@ -1,0 +1,24 @@
+package ModeloCadastral {
+
+    datatype DocumentoIdentidade {
+        registro: string
+        orgaoExpedidor: string
+    }
+
+    enum EstadoCivil { Solteiro, Casado, Divorciado, Viuvo }
+
+    kind Individuo {
+        nomeCompleto: string
+        dataNascimento: date {const}
+        estadoCivil: EstadoCivil
+        documento: DocumentoIdentidade
+    }
+
+    subkind FuncionarioPublico specializes Individuo {
+        matricula: string
+        salarioBase: number
+    }
+
+    Individuo01
+    Funcionario02
+}
