@@ -9,7 +9,7 @@ void SyntaxReporter::print_summary_table(const Ontology& ont, std::ostream& out)
     out << std::setw(58) << "TABELA DE SINTESE DOS CONSTRUTOS DA ONTOLOGIA" << "\n";
     out << std::string(90, '=') << "\n";
 
-    // 1. Resumo Quantitativo Geral
+    //resumo geral
     out << "\n[1] RESUMO QUANTITATIVO GLOBAL\n";
     out << std::string(90, '-') << "\n";
     out << std::left << std::setw(50) << "CATEGORIA DO CONSTRUTO" << "QUANTIDADE" << "\n";
@@ -25,7 +25,7 @@ void SyntaxReporter::print_summary_table(const Ontology& ont, std::ostream& out)
     out << std::left << std::setw(50) << "Instancias de Individuos" << ont.get_total_instances() << "\n";
     out << std::string(90, '-') << "\n";
 
-    // 2. Mapeamento de Pacotes e suas Classes
+    // mapeamento
     out << "\n[2] PACOTES E SUAS RESPECTIVAS CLASSES\n";
     out << std::string(90, '-') << "\n";
     for (const auto& pkg : ont.get_packages()) {
@@ -47,7 +47,7 @@ void SyntaxReporter::print_summary_table(const Ontology& ont, std::ostream& out)
         out << "\n";
     }
 
-    // 3. Detalhamento de Classes e seus Atributos
+    // detalhamento das classes
     out << "[3] DETALHAMENTO DE CLASSES E ATRIBUTOS\n";
     out << std::string(90, '-') << "\n";
     for (const auto& pkg : ont.get_packages()) {
@@ -88,7 +88,7 @@ void SyntaxReporter::print_summary_table(const Ontology& ont, std::ostream& out)
         }
     }
 
-    // 4. Detalhamento das Relações Externas
+    // detalhamento das relacoes externas
     out << "[4] RELACOES EXTERNAS (FORA DO ESCOPO DE CLASSE)\n";
     out << std::string(90, '-') << "\n";
     bool has_ext = false;

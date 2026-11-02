@@ -39,4 +39,4 @@ extern ErrorHandler g_errorHandler;
 
 } // namespace Tonto
 
-#endif // ERROR_HANDLER_HPP
+#endif

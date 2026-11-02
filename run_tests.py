@@ -1,12 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Analisador Sintático TONTO - Runner e Validador de Testes (Python / C++)
-Executa a análise sintática de ontologias escritas em TONTO, gerando:
-(1) Tabela de Síntese dos construtos encontrados
-(2) Relatório de Erros da Ontologia com sugestões de tratamento
-Compatível com Windows, Linux e macOS.
-"""
 
 import sys
 import os

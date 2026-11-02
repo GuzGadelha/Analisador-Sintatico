@@ -32,13 +32,12 @@ int main(int argc, char** argv) {
     Tonto::g_ontology.clear();
     Tonto::g_errorHandler.clear();
 
-    // Executa a análise sintática ascendente (Bison)
     int parse_result = yyparse();
 
-    // 1. Apresenta a Visualização 1: TABELA DE SÍNTESE
+    // TABELA DE SINTESE
     Tonto::SyntaxReporter::print_summary_table(Tonto::g_ontology);
 
-    // 2. Apresenta a Visualização 2: RELATÓRIO DE ERROS DA ONTOLOGIA
+    // RELATÓRIO DE ERROS DA ONTOLOGIA
     Tonto::g_errorHandler.print_error_report();
 
     if (argc > 1 && yyin) {
