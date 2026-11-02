@@ -75,7 +75,7 @@ static Tonto::Relation current_relation;
 %token <sval> TOKEN_CUSTOM_DATATYPE
 %token <sval> TOKEN_MULTIPLICITY
 
-/* Tipos de não-terminais */
+/* Tipos de nao-terminais */
 %type <sval> any_name class_identifier attr_identifier rel_identifier stereo_identifier
 %type <sval> type_specifier rel_operator cardinality card_bound opt_cardinality
 %type <sval> opt_rel_name opt_specializes restriction_kw
