@@ -5,6 +5,7 @@
 #include "SyntaxReporter.hpp"
 #include "ErrorHandler.hpp"
 
+
 extern int yyparse();
 extern FILE* yyin;
 extern void reset_lexer_coordinates();
@@ -32,6 +33,9 @@ int main(int argc, char** argv) {
     Tonto::g_ontology.clear();
     Tonto::g_errorHandler.clear();
 
+    extern int yydebug;
+    yydebug = 1;
+    
     int parse_result = yyparse();
 
     // TABELA DE SINTESE

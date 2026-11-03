@@ -76,12 +76,18 @@ static Tonto::Relation current_relation;
 %token <sval> TOKEN_MULTIPLICITY
 
 /* Tipos de nao-terminais */
-%type <sval> any_name class_identifier attr_identifier rel_identifier stereo_identifier
+%type <sval> any_name class_identifier attr_identifier rel_identifier class_stereo relation_stereo
 %type <sval> type_specifier rel_operator cardinality card_bound opt_cardinality
 %type <sval> opt_rel_name opt_specializes restriction_kw
 %type <svec> identifier_list opt_meta_attributes meta_attr_list opt_restrictions
 %type <attr> attribute_decl
 %type <rel> internal_relation_decl external_relation_decl
+
+%code {
+    #include <iostream>
+}
+
+%define parse.trace
 
 %start ontology_specification
 
@@ -126,10 +132,6 @@ element:
       }
     | instance_declaration
     | import_declaration
-    | error {
-          // Recuperação sintática a nível de construto
-          yyerrok;
-      }
     ;
 
 import_declaration:
@@ -144,7 +146,7 @@ import_declaration:
    ============================================================== */
 
 class_declaration:
-      stereo_identifier class_identifier opt_specializes TOKEN_LBRACE {
+      class_stereo class_identifier opt_specializes TOKEN_LBRACE {
           current_class = Tonto::OntoClass();
           current_class.name = *$2;
           current_class.stereotype = *$1;
@@ -155,7 +157,7 @@ class_declaration:
       } opt_class_body TOKEN_RBRACE {
           Tonto::g_ontology.add_class(current_class);
       }
-    | stereo_identifier class_identifier opt_specializes {
+    | class_stereo class_identifier opt_specializes {
           Tonto::OntoClass cls;
           cls.name = *$2;
           cls.stereotype = *$1;
@@ -433,7 +435,7 @@ genset_member:
    ============================================================== */
 
 internal_relation_decl:
-      TOKEN_AT stereo_identifier opt_cardinality rel_operator opt_cardinality class_identifier opt_meta_attributes {
+      TOKEN_AT relation_stereo opt_cardinality rel_operator opt_cardinality class_identifier opt_meta_attributes {
           Tonto::Relation* r = new Tonto::Relation();
           r->stereotype = *$2;
           r->is_internal = true;
@@ -447,7 +449,7 @@ internal_relation_decl:
           delete $2; delete $4; delete $6;
           $$ = r;
       }
-    | stereo_identifier opt_rel_name opt_cardinality rel_operator opt_cardinality class_identifier opt_meta_attributes {
+    | relation_stereo opt_rel_name opt_cardinality rel_operator opt_cardinality class_identifier opt_meta_attributes {
           Tonto::Relation* r = new Tonto::Relation();
           r->stereotype = *$1;
           if ($2) { r->name = *$2; delete $2; }
@@ -478,7 +480,7 @@ internal_relation_decl:
     ;
 
 external_relation_decl:
-      TOKEN_AT stereo_identifier TOKEN_RELATION opt_rel_name class_identifier opt_cardinality rel_operator opt_cardinality class_identifier opt_meta_attributes {
+      TOKEN_AT relation_stereo TOKEN_RELATION opt_rel_name class_identifier opt_cardinality rel_operator opt_cardinality class_identifier opt_meta_attributes {
           Tonto::Relation* r = new Tonto::Relation();
           r->stereotype = *$2;
           if ($4) { r->name = *$4; delete $4; }
@@ -494,7 +496,7 @@ external_relation_decl:
           delete $2; delete $5; delete $7; delete $9;
           $$ = r;
       }
-    | stereo_identifier opt_rel_name opt_cardinality TOKEN_LPAREN class_identifier TOKEN_RPAREN rel_operator opt_cardinality TOKEN_LPAREN class_identifier TOKEN_RPAREN opt_meta_attributes {
+    | relation_stereo opt_rel_name opt_cardinality TOKEN_LPAREN class_identifier TOKEN_RPAREN rel_operator opt_cardinality TOKEN_LPAREN class_identifier TOKEN_RPAREN opt_meta_attributes {
           Tonto::Relation* r = new Tonto::Relation();
           r->stereotype = *$1;
           if ($2) { r->name = *$2; delete $2; }
@@ -510,7 +512,7 @@ external_relation_decl:
           delete $1; delete $5; delete $7; delete $10;
           $$ = r;
       }
-    | stereo_identifier opt_rel_name opt_cardinality class_identifier rel_operator opt_cardinality class_identifier opt_meta_attributes {
+    | relation_stereo opt_rel_name opt_cardinality class_identifier rel_operator opt_cardinality class_identifier opt_meta_attributes {
           Tonto::Relation* r = new Tonto::Relation();
           r->stereotype = *$1;
           if ($2) { r->name = *$2; delete $2; }
@@ -582,25 +584,29 @@ instance_declaration:
    ============================================================== */
 
 any_name:
-      class_identifier { $$ = $1; }
-    | attr_identifier  { $$ = $1; }
+      TOKEN_CLASS_NAME    { $$ = $1; }
+    | TOKEN_RELATION_NAME { $$ = $1; }
     ;
 
 class_identifier:
-      TOKEN_CLASS_NAME { $$ = $1; }
+      TOKEN_CLASS_NAME    { $$ = $1; }
     ;
 
 attr_identifier:
       TOKEN_RELATION_NAME { $$ = $1; }
+    | TOKEN_CLASS_NAME    { $$ = $1; }
     ;
 
 rel_identifier:
       TOKEN_RELATION_NAME { $$ = $1; }
     ;
 
-stereo_identifier:
+class_stereo:
       TOKEN_CLASS_STEREO    { $$ = $1; }
-    | TOKEN_RELATION_STEREO { $$ = $1; }
+    ;
+
+relation_stereo:
+      TOKEN_RELATION_STEREO { $$ = $1; }
     ;
 
 type_specifier:
@@ -611,14 +617,22 @@ type_specifier:
     | TOKEN_CUSTOM_DATATYPE {
           $$ = $1;
       }
-    | class_identifier {
+    | TOKEN_CLASS_NAME {
+          $$ = $1;
+      }
+    | TOKEN_RELATION_NAME {
           $$ = $1;
       }
     ;
-
 %%
 
 void yyerror(const char* s) {
+    static int consecutive_errors = 0;
+    if (consecutive_errors > 50) {
+        return; // Proteção contra loop infinito de erros em cadeia
+    }
+    consecutive_errors++;
+
     std::string token = (yytext ? yytext : "");
     std::string msg = (s ? s : "Erro de sintaxe");
     Tonto::g_errorHandler.report_generic_error(yylloc.first_line, yylloc.first_column, msg + " no token '" + token + "'");

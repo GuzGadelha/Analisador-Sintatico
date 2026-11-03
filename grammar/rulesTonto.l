@@ -19,35 +19,12 @@ static int current_col = 1;
 %option noyywrap
 %option yylineno
 
-CUSTOM_DATATYPE    [a-zA-Z]+"DataType"
-INSTANCE_NAME      [a-zA-Z][a-zA-Z_]*[0-9]+
-CLASS_NAME         [A-Z][a-zA-Z0-9_]*
-RELATION_NAME      [a-z][a-zA-Z0-9_]*
-
 %%
 
 [ \t\r]+           { /* ignora espacos em branco */ }
 \n                 { current_col = 1; }
 "//"[^\r\n]*       { /* ignora comentarios de linha */ }
 "/*"([^*]|\*+[^*/])*\*+"/" { /* ignora comentarios de bloco */ }
-
-"--"               { return TOKEN_RELATION_LINK; }
-"<>--"             { return TOKEN_COMP_AGG_LEFT; }
-"--<>"             { return TOKEN_COMP_AGG_RIGHT; }
-".."               { return TOKEN_RANGE; }
-"{"                { return TOKEN_LBRACE; }
-"}"                { return TOKEN_RBRACE; }
-"("                { return TOKEN_LPAREN; }
-")"                { return TOKEN_RPAREN; }
-"["                { return TOKEN_LBRACKET; }
-"]"                { return TOKEN_RBRACKET; }
-"*"                { return TOKEN_STAR; }
-"@"                { return TOKEN_AT; }
-"."                { return TOKEN_DOT; }
-","                { return TOKEN_COMMA; }
-":"                { return TOKEN_COLON; }
-
-[0-9]+             { yylval.sval = new std::string(yytext); return TOKEN_MULTIPLICITY; }
 
 "package"              { return TOKEN_PACKAGE; }
 "import"               { return TOKEN_IMPORT; }
@@ -126,10 +103,28 @@ RELATION_NAME      [a-z][a-zA-Z0-9_]*
 "subsets"              { yylval.sval = new std::string(yytext); return TOKEN_META_ATTR; }
 "redefines"            { yylval.sval = new std::string(yytext); return TOKEN_META_ATTR; }
 
-{CUSTOM_DATATYPE}      { yylval.sval = new std::string(yytext); return TOKEN_CUSTOM_DATATYPE; }
-{INSTANCE_NAME}        { yylval.sval = new std::string(yytext); return TOKEN_INSTANCE_NAME; }
-{CLASS_NAME}           { yylval.sval = new std::string(yytext); return TOKEN_CLASS_NAME; }
-{RELATION_NAME}        { yylval.sval = new std::string(yytext); return TOKEN_RELATION_NAME; }
+"--"               { return TOKEN_RELATION_LINK; }
+"<>--"             { return TOKEN_COMP_AGG_LEFT; }
+"--<>"             { return TOKEN_COMP_AGG_RIGHT; }
+".."               { return TOKEN_RANGE; }
+"{"                { return TOKEN_LBRACE; }
+"}"                { return TOKEN_RBRACE; }
+"("                { return TOKEN_LPAREN; }
+")"                { return TOKEN_RPAREN; }
+"["                { return TOKEN_LBRACKET; }
+"]"                { return TOKEN_RBRACKET; }
+"*"                { return TOKEN_STAR; }
+"@"                { return TOKEN_AT; }
+"."                { return TOKEN_DOT; }
+","                { return TOKEN_COMMA; }
+":"                { return TOKEN_COLON; }
+
+[0-9]+             { yylval.sval = new std::string(yytext); return TOKEN_MULTIPLICITY; }
+
+[a-zA-Z]+"DataType"      { yylval.sval = new std::string(yytext); return TOKEN_CUSTOM_DATATYPE; }
+[a-zA-Z][a-zA-Z_]*[0-9]+ { yylval.sval = new std::string(yytext); return TOKEN_INSTANCE_NAME; }
+[A-Z][a-zA-Z0-9_]*       { yylval.sval = new std::string(yytext); return TOKEN_CLASS_NAME; }
+[a-z][a-zA-Z_]*          { yylval.sval = new std::string(yytext); return TOKEN_RELATION_NAME; }
 
 [0-9]+[a-zA-Z_]+       {
     Tonto::g_errorHandler.report_error(yylloc.first_line, yylloc.first_column, yytext,
