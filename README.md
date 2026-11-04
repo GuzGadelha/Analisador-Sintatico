@@ -85,18 +85,7 @@ make test
 ./tontoParser testes/01_modelo_completo_anexo.tonto
 ```
 
-### 3. Execução Multiplataforma via Python (Windows / Linux / Mac)
-O projeto inclui um executor e validador completo em Python (`run_tests.py`) que dispensa a necessidade de compiladores externos pré-instalados:
-```bash
-# Executar a bateria completa de testes
-python run_tests.py
-
-# Executar sobre um arquivo específico
-python run_tests.py testes/01_modelo_completo_anexo.tonto
-python run_tests.py testes/05_erros_sintaticos.tonto
-```
-
-### 4. Execução pelo VS Code
+### 3. Execução pelo VS Code
 - **Compilar:** Pressione `Ctrl + Shift + B` (aciona a tarefa `Build Debug`).
 - **Executar/Depurar:** Pressione `F5` para rodar o parser sobre o modelo completo do Anexo com depuração interativa via GDB.
 
